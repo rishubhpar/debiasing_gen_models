@@ -65,16 +65,16 @@ class Asyrp(object):
 
         self.learn_sigma = False # it will be changed in load_pretrained_model()
 
-        # ----------- Editing txt -----------#
-        if self.args.edit_attr is None:
-            self.src_txts = self.args.src_txts
-            self.trg_txts = self.args.trg_txts
-        elif self.args.edit_attr == "attribute":
-            pass
-        else:
-            # print(SRC_TRG_TXT_DIC)
-            self.src_txts = SRC_TRG_TXT_DIC[self.args.edit_attr][0]
-            self.trg_txts = SRC_TRG_TXT_DIC[self.args.edit_attr][1]
+        # # ----------- Editing txt -----------#
+        # if self.args.edit_attr is None:
+        #     # self.src_txts = self.args.src_txts
+        #     # self.trg_txts = self.args.trg_txts
+        # elif self.args.edit_attr == "attribute":
+        #     pass
+        # else:
+        #     # print(SRC_TRG_TXT_DIC)
+        #     # self.src_txts = SRC_TRG_TXT_DIC[self.args.edit_attr][0]
+        #     # self.trg_txts = SRC_TRG_TXT_DIC[self.args.edit_attr][1]
 
 
     def load_pretrained_model(self):
@@ -135,69 +135,68 @@ class Asyrp(object):
 
     
     @torch.no_grad()
-    def save_image(self, model, x_lat_tensor, seq_inv, seq_inv_next,
-                    save_x0 = False, save_x_origin = False,
-                    save_process_delta_h = False, save_process_origin = False,
-                    x0_tensor = None, delta_h_dict=None, get_delta_hs=False,
-                    folder_dir="", file_name="", hs_coeff=(1.0,1.0),
-                    image_space_noise_dict=None):
+    def save_image(self, model, x_lat_tensor, seq_inv, seq_inv_next, save_process_origin = False, get_delta_hs=False,
+                    folder_dir="", file_name="", hs_coeff=(1.0,1.0),):
     
 
-        if save_process_origin or save_process_delta_h:
-            os.makedirs(os.path.join(folder_dir,file_name), exist_ok=True)
+        # if save_process_origin or save_process_delta_h:
+        #     os.makedirs(os.path.join(folder_dir,file_name), exist_ok=True)
 
-        process_num = int(save_x_origin) + (len(hs_coeff) if isinstance(hs_coeff, list) else 1)
+        # process_num = int(save_x_origin) + (len(hs_coeff) if isinstance(hs_coeff, list) else 1)
+        # print("processsssssss number", process_num)
+        # print(len(seq_inv)*(process_num))
+        # print()
         
-        with tqdm(total=len(seq_inv)*(process_num), desc=f"Generative process") as progress_bar:
+        with tqdm(total=len(seq_inv), desc=f"Generative process") as progress_bar:
             x_list = []
 
-            if save_x0:
-                if x0_tensor is not None:
-                    x_list.append(x0_tensor.to(self.device))
+            # if save_x0:
+            #     if x0_tensor is not None:
+            #         x_list.append(x0_tensor.to(self.device))
             
-            if save_x_origin:
-                labels = None
-     
-                # No delta h
-                x = x_lat_tensor.clone().to(self.device)
+            # if save_x_origin:
+            labels = None
+    
+            # No delta h
+            x = x_lat_tensor.clone().to(self.device)
 
-                for it, (i, j) in enumerate(zip(reversed((seq_inv)), reversed((seq_inv_next)))):
-                    t = (torch.ones(self.args.bs_train) * i).to(self.device)
-                    t_next = (torch.ones(self.args.bs_train) * j).to(self.device)
-                    
-                    x, x0_t, grads, _  = denoising_step(x, t=t, t_next=t_next, models=model,
-                                    logvars=self.logvar,
-                                    sample = self.args.sample,
-                                    male = self.args.male,
-                                    eyeglasses = self.args.eyeglasses,
-                                    scale = self.args.scale,
-                                    timestep_list = self.args.timestep_list,
-                                    usefancy = self.args.usefancy,
-                                    gamma_factor = self.args.gamma_factor,
-                                    guidance_loss = self.args.guidance_loss,
-                                    attribute_list = self.args.attribute_list,
-                                    vanilla_generation = self.args.vanilla_generation,
-                                    universal_guidance=self.args.universal_guidance,
-                                    sampling_type= self.args.sample_type,
-                                    b=self.betas,
-                                    learn_sigma=self.learn_sigma,
-                                    eta=1.0
-                                    )
-                    progress_bar.update(1)
+            for it, (i, j) in enumerate(zip(reversed((seq_inv)), reversed((seq_inv_next)))):
+                t = (torch.ones(1) * i).to(self.device)
+                t_next = (torch.ones(1) * j).to(self.device)
+                
+                x, x0_t, grads, _  = denoising_step(x, t=t, t_next=t_next, models=model,
+                                logvars=self.logvar,
+                                sample = self.args.sample,
+                                male = self.args.male,
+                                eyeglasses = self.args.eyeglasses,
+                                scale = self.args.scale,
+                                timestep_list = self.args.timestep_list,
+                                usefancy = self.args.usefancy,
+                                gamma_factor = self.args.gamma_factor,
+                                guidance_loss = self.args.guidance_loss,
+                                attribute_list = self.args.attribute_list,
+                                vanilla_generation = self.args.vanilla_generation,
+                                universal_guidance=self.args.universal_guidance,
+                                sampling_type= self.args.sample_type,
+                                b=self.betas,
+                                learn_sigma=self.learn_sigma,
+                                eta=1.0
+                                )
+                progress_bar.update(1)
 
 
-                    if save_process_origin:
-                        output = torch.cat([x, x0_t], dim=0)
-                        output = (output + 1) * 0.5
-                        grid = tvu.make_grid(output, nrow=self.args.bs_train, padding=1)
-                        tvu.save_image(grid, os.path.join(folder_dir, file_name, f'origin_{int(t[0].item())}.png'), normalization=True)
+                # if save_process_origin:
+                #     output = torch.cat([x, x0_t], dim=0)
+                #     output = (output + 1) * 0.5
+                #     grid = tvu.make_grid(output, nrow=self.args.bs_train, padding=1)
+                #     tvu.save_image(grid, os.path.join(folder_dir, file_name, f'origin_{int(t[0].item())}.png'), normalization=True)
 
-                x_list.append(x)
+            x_list.append(x)
                 
 
 
-            if self.args.pass_editing:
-                pass
+            # if self.args.pass_editing:
+            #     pass
 
 
         x = torch.cat(x_list, dim=0)
@@ -220,9 +219,6 @@ class Asyrp(object):
                                                             return_clip_loss=False)
 
         seq_test = np.linspace(0, 1, self.args.n_test_step) * self.args.t_0
-        # print(seq_test)
-        # seq_test_edit = seq_test[seq_test >= self.t_edit]
-        # seq_test_edit = [int(s+1e-6) for s in list(seq_test_edit)]
         seq_test = [int(s+1e-6) for s in list(seq_test)]
         seq_test_next = [-1] + list(seq_test[:-1])
 
@@ -230,15 +226,10 @@ class Asyrp(object):
         print("loading model pretrained")
         # ----------- Model -----------#
         model = self.load_pretrained_model()
-        
-        # # init delta_h_dict.
-        # delta_h_dict = {}
-        # for i in seq_train:
-        #     delta_h_dict[i] = None
 
-        if self.args.train_delta_block:
-            model.setattr_layers(self.args.get_h_num)
-            print("Setattr layers")
+        # if self.args.train_delta_block:
+        #     model.setattr_layers(self.args.get_h_num)
+        #     print("Setattr layers")
             
 
         model = model.to(self.device)
@@ -248,18 +239,17 @@ class Asyrp(object):
 
         # ----------- Pre-compute -----------#
         print("Prepare identity latent...")
-        # get xT
-        # img_lat_pairs_dic contains list of [true image, inverted image, corresponding latent]
-        if self.args.load_random_noise:
-            print("using random noise")
-            img_lat_pairs_dic = self.random_noise_pairs(model, saved_noise=self.args.saved_random_noise, save_imgs=self.args.save_precomputed_images)
-        else:
-            img_lat_pairs_dic = self.precompute_pairs(model, self.args.save_precomputed_images)
+
 
         if self.args.just_precompute:
             # if you just want to precompute, you can stop here.  i.e. just finding the inversion latents and stop
+            img_lat_pairs_dic = self.precompute_pairs(model, self.args.save_precomputed_images)
             print("Pre-computed done.")
             return
+        else:
+            print("using random noise")
+            img_lat_pairs_dic = self.random_noise_pairs(model)
+
 
         print("number of noise vectors", len(img_lat_pairs_dic))
         if self.args.target_image_id:
@@ -268,126 +258,49 @@ class Asyrp(object):
 
         # Unfortunately, ima_lat_pairs_dic does not match with batch_size
         x_lat_tensor = None
-        x0_tensor = None
+        # x0_tensor = None
         model.eval()
         
         # Test set
 
-        if self.args.do_test:
-            print("inside testing set")
+        # if self.args.do_test:
+        print("inside testing set")
 
+        x_lat_tensor = None
+
+        for step, (x0, _, x_lat) in enumerate(img_lat_pairs_dic['test']):
+            # print(x0.shape)
+            if self.args.target_image_id:
+                # assert self.args.bs_train == 1, "target_image_id is only supported for batch_size == 1"
+                if not step in self.args.target_image_id:
+                    continue
+
+            if self.args.start_image_id > step:
+                continue
+
+            if x_lat_tensor is None:
+                x_lat_tensor = x_lat
+                # x0_tensor = x0
+            else:
+                x_lat_tensor = torch.cat((x_lat_tensor, x_lat), dim=0)
+                # x0_tensor = torch.cat((x0_tensor, x0), dim=0)
+            # if (step+1) % self.args.bs_train != 0:
+            #     continue
+            
+            self.save_image(model, x_lat_tensor, seq_test, seq_test_next,
+                                        folder_dir=self.args.test_image_folder,
+                                        save_process_origin=self.args.save_process_origin,
+                                        file_name=f'test_{step}_{self.args.n_iter - 1}'
+                                        )
+                                    
+            if (step+1)*self.args.bs_test >= self.args.n_test_img:
+                break
             x_lat_tensor = None
-
-            for step, (x0, _, x_lat) in enumerate(img_lat_pairs_dic['test']):
-                # print(x0.shape)
-                if self.args.target_image_id:
-                    assert self.args.bs_train == 1, "target_image_id is only supported for batch_size == 1"
-                    if not step in self.args.target_image_id:
-                        continue
-
-                if self.args.start_image_id > step:
-                    continue
-
-                if x_lat_tensor is None:
-                    x_lat_tensor = x_lat
-                    if self.args.use_x0_tensor:
-                                x0_tensor = x0
-                else:
-                    x_lat_tensor = torch.cat((x_lat_tensor, x_lat), dim=0)
-                    if self.args.use_x0_tensor:
-                                x0_tensor = torch.cat((x0_tensor, x0), dim=0)
-                if (step+1) % self.args.bs_train != 0:
-                    continue
-                
-                self.save_image(model, x_lat_tensor, seq_test, seq_test_next,
-                                            save_x0 = self.args.save_x0, save_x_origin = self.args.save_x_origin,
-                                            x0_tensor=x0_tensor, 
-                                            folder_dir=self.args.test_image_folder, get_delta_hs=self.args.num_mean_of_delta_hs,
-                                            save_process_origin=self.args.save_process_origin, save_process_delta_h=self.args.save_process_delta_h,
-                                            file_name=f'test_{step}_{self.args.n_iter - 1}'
-                                            )
-                                        
-                if (step+1)*self.args.bs_test >= self.args.n_test_img:
-                    break
-                x_lat_tensor = None
-
-
-    # @torch.no_grad()
-    # def precompute_pairs_with_h(self, model, img_path):
-
-
-    #     if not os.path.exists('./precomputed'):
-    #         os.mkdir('./precomputed')
-
-    #     save_path = "_".join(img_path.split(".")[-2].split('/')[-2:])
-    #     save_path = self.config.data.category + '_inv' + str(self.args.n_inv_step) + '_' + save_path + '.pt'
-    #     save_path = os.path.join('precomputed', save_path)
-
-    #     n = 1
-
-    #     print("Precompute multiple h and x_T")
-    #     seq_inv = np.linspace(0, 1, self.args.n_inv_step) * self.args.t_0
-    #     seq_inv = [int(s+1e-6) for s in list(seq_inv)]
-    #     seq_inv_next = [-1] + list(seq_inv[:-1])
-
-    #     if os.path.exists(save_path):
-    #         print("Precomputed pairs already exist")
-    #         img_lat_pair = torch.load(save_path)
-    #         return img_lat_pair
-    #     else:
-    #         tmp_transform = transforms.Compose([transforms.Resize((256, 256)), transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-            
-    #         image = Image.open(img_path).convert('RGB')
-
-    #         width, height = image.size
-    #         if width > height:
-    #             image = transforms.CenterCrop(height)(image)
-    #         else:
-    #             image = transforms.CenterCrop(width)(image)
-            
-    #         image = tmp_transform(image)
-
-    #         h_dic = {}
-
-    #         x0 = image.unsqueeze(0).to(self.device)
-
-    #         x = x0.clone()
-    #         model.eval()
-    #         time_s = time.time()
-
-    #         with torch.no_grad():
-    #             with tqdm(total=len(seq_inv), desc=f"Inversion processing") as progress_bar:
-    #                 for it, (i, j) in enumerate(zip((seq_inv_next[1:]), (seq_inv[1:]))):
-    #                     t = (torch.ones(n) * i).to(self.device)
-    #                     t_prev = (torch.ones(n) * j).to(self.device)
-
-    #                     x, _, _, h = denoising_step(x, t=t, t_next=t_prev, models=model,
-    #                                         logvars=self.logvar,
-    #                                         sampling_type='ddim',
-    #                                         b=self.betas,
-    #                                         eta=0,
-    #                                         learn_sigma=self.learn_sigma,
-    #                                         )
-    #                     progress_bar.update(1)
-    #                     h_dic[i] = h.detach().clone().cpu()
-                        
-
-    #             time_e = time.time()
-    #             progress_bar.set_description(f"Inversion processing time: {time_e - time_s:.2f}s")
-    #             x_lat = x.clone()
-    #         print("Generative process is skipped")
-
-    #         img_lat_pairs = [x0, 0 , x_lat.detach().clone().cpu(), h_dic]
-            
-    #         torch.save(img_lat_pairs,save_path)
-    #         print("Precomputed pairs are saved to ", save_path)
-
-    #         return img_lat_pairs
 
 
     # ----------- Pre-compute -----------#
     # @torch.no_grad()
-    def precompute_pairs(self, model, save_imgs=False):
+    def precompute_pairs(self, model):
     
         print("Prepare identity latent")
         seq_inv = np.linspace(0, 1, self.args.n_inv_step) * self.args.t_0
@@ -399,45 +312,27 @@ class Asyrp(object):
 
         for mode in ['test']:
             img_lat_pairs = []
-            # if self.config.data.dataset == "IMAGENET":
-            #     if self.args.target_class_num is not None:
-            #         pairs_path = os.path.join('precomputed/',
-            #                                   f'{self.config.data.category}_{IMAGENET_DIC[str(self.args.target_class_num)][1]}_{mode}_t{self.args.t_0}_nim{self.args.n_precomp_img}_ninv{self.args.n_inv_step}_pairs.pth')
-            #     else:
-            #         pairs_path = os.path.join('precomputed/',
-            #                                   f'{self.config.data.category}_{mode}_t{self.args.t_0}_nim{self.args.n_precomp_img}_ninv{self.args.n_inv_step}_pairs.pth')
-
-            # else:
-            #     if mode == 'train':
-            #         pairs_path = os.path.join('precomputed/',
-            #                               f'{self.config.data.category}_{mode}_t{self.args.t_0}_nim{self.args.n_train_img}_ninv{self.args.n_inv_step}_pairs.pth')
-            #     else:
-            #         pairs_path = os.path.join('precomputed/',
-            #                                   f'{self.config.data.category}_{mode}_t{self.args.t_0}_nim{self.args.n_test_img}_ninv{self.args.n_inv_step}_pairs.pth')
-            # print(pairs_path)
 
         
             print("no path or recompute")
 
-            if self.config.data.category == 'CUSTOM':
+            # if self.config.data.category == 'CUSTOM':
                 
-                print("custom:", self.args.custom_train_dataset_dir)
-                DATASET_PATHS["custom_train"] = self.args.custom_train_dataset_dir
+                # print("custom:", self.args.custom_train_dataset_dir)
+                # DATASET_PATHS["custom_train"] = self.args.custom_train_dataset_dir
 
 
             DATASET_PATHS["custom_test"] = os.path.join(self.args.test_path_one)
             print("path to generate:", DATASET_PATHS["custom_test"])
 
-            test_dataset = get_dataset(self.config.data.dataset, DATASET_PATHS, self.config,
-                                                            target_class_num=self.args.target_class_num)
-            loader_dic = get_dataloader(test_dataset, bs_train=1,#self.args.bs_train,
-                                        num_workers=self.config.data.num_workers, shuffle=False)
+            test_dataset = get_dataset(self.config.data.dataset, DATASET_PATHS, self.config)
+            loader_dic = get_dataloader(test_dataset, num_workers=self.config.data.num_workers, shuffle=False)
             loader = loader_dic[mode]
             
-            if self.args.save_process_origin:
-                save_process_folder = os.path.join(self.args.image_folder, f'inversion_process')
-                if not os.path.exists(save_process_folder):
-                    os.makedirs(save_process_folder)
+            # if self.args.save_process_origin:
+            #     save_process_folder = os.path.join(self.args.image_folder, f'inversion_process')
+            #     if not os.path.exists(save_process_folder):
+            #         os.makedirs(save_process_folder)
 
 
             for step, (img, label) in enumerate(loader):
@@ -446,16 +341,12 @@ class Asyrp(object):
                 
                 if (mode == "test" and step == self.args.n_test_img):
                     break
-                # if exist_num != 0:
-                #     exist_num = exist_num - 1
-                #     continue
                 x0 = img.to(self.config.device)
-                if save_imgs:
-                    tvu.save_image((x0 + 1) * 0.5, os.path.join(self.args.image_folder, f'{mode}_{step}_0_orig.png'))
+                # if save_imgs:
+                #     tvu.save_image((x0 + 1) * 0.5, os.path.join(self.args.image_folder, f'{mode}_{step}_0_orig.png'))
 
                 x = x0.clone()
                 model.eval()
-                # time_s = time.time()
                 
                 with torch.no_grad():
                     h_vector = []
@@ -484,7 +375,7 @@ class Asyrp(object):
 
     # ----------- Get random latent -----------#
     @torch.no_grad()
-    def random_noise_pairs(self, model, saved_noise=False, save_imgs=False):
+    def random_noise_pairs(self, model):
 
         print("Prepare random latent")
         seq_inv = np.linspace(0, 1, self.args.n_inv_step) * self.args.t_0
@@ -494,93 +385,17 @@ class Asyrp(object):
         n = 1
         img_lat_pairs_dic = {}
 
-        if saved_noise:
+        test_lat = []
 
-            for mode in ['train', 'test']:
-                img_lat_pairs = []
-                if self.config.data.dataset == "IMAGENET":
-                    if self.args.target_class_num is not None:
-                        pairs_path = os.path.join('precomputed/',
-                                                f'{self.config.data.category}_{IMAGENET_DIC[str(self.args.target_class_num)][1]}_{mode}_random_noise_nim{self.args.n_precomp_img}_ninv{self.args.n_inv_step}_pairs.pth')
-                    else:
-                        pairs_path = os.path.join('precomputed/',
-                                                f'{self.config.data.category}_{mode}_random_noise_nim{self.args.n_precomp_img}_ninv{self.args.n_inv_step}_pairs.pth')
+        for i in range(self.args.n_test_img//self.args.bs_test):
+            lat = torch.randn((self.args.bs_test, self.config.data.channels, self.config.data.image_size, self.config.data.image_size))
+            test_lat.append([torch.zeros_like(lat), torch.zeros_like(lat), lat])
 
-                else:
-                    if mode == 'train':
-                        pairs_path = os.path.join('precomputed/',
-                                            f'{self.config.data.category}_{mode}_random_noise_nim{self.args.n_train_img}_ninv{self.args.n_inv_step}_pairs.pth')
-                    else:
-                        pairs_path = os.path.join('precomputed/',
-                                                f'{self.config.data.category}_{mode}_random_noise_nim{self.args.n_test_img}_ninv{self.args.n_inv_step}_pairs.pth')
-                print(pairs_path)
-                if os.path.exists(pairs_path):
-                    print(f'{mode} pairs exists')
-                    img_lat_pairs_dic[mode] = torch.load(pairs_path, map_location=torch.device('cpu'))
-                    if save_imgs:
-                        for step, (_, x_id, x_lat) in enumerate(img_lat_pairs_dic[mode]):
-                            tvu.save_image((x_id + 1) * 0.5, os.path.join(self.args.image_folder,
-                                                                        f'{mode}_{step}_1_rec_ninv{self.args.n_inv_step}.png'))
-                            if step == self.args.n_precomp_img - 1:
-                                break
-                    continue
-                
-                step = 0
-                while True:
-                    
-                    with torch.no_grad():
-                        x_lat = torch.randn((1, self.config.data.channels, self.config.data.image_size, self.config.data.image_size)).to(self.device)
+        if  self.args.n_test_img%self.args.bs_test!=0:
+            lat = torch.randn((self.args.n_test_img%self.args.bs_test, self.config.data.channels, self.config.data.image_size, self.config.data.image_size))
+            test_lat.append([torch.zeros_like(lat), torch.zeros_like(lat), lat])
 
-                        if save_imgs:
-                            tvu.save_image((x_lat + 1) * 0.5, os.path.join(self.args.image_folder,
-                                                                        f'{mode}_{step}_1_lat_ninv{self.args.n_inv_step}.png'))
-
-                        with tqdm(total=len(seq_inv), desc=f"Generative process {mode} {step}") as progress_bar:
-                            x = x_lat
-                            for it, (i, j) in enumerate(zip(reversed((seq_inv)), reversed((seq_inv_next)))):
-                                t = (torch.ones(n) * i).to(self.device)
-                                t_next = (torch.ones(n) * j).to(self.device)
-
-                                x, _, _, _ = denoising_step(x, t=t, t_next=t_next, models=model,
-                                                logvars=self.logvar,
-                                                sampling_type=self.args.sample_type,
-                                                b=self.betas,
-                                                learn_sigma=self.learn_sigma)
-                                progress_bar.update(1)
-                        img_lat_pairs.append([x.detach().clone(), x.detach().clone(), x_lat.detach().clone()])
-
-                    
-
-                    if save_imgs:
-                        tvu.save_image((x + 1) * 0.5, os.path.join(self.args.image_folder,
-                                                                f'{mode}_{step}_1_rec_ninv{self.args.n_inv_step}.png'))
-                    if (mode == "train" and step == self.args.n_train_img - 1) or (mode == "test" and step == self.args.n_test_img - 1):
-                        break
-                    step += 1
-
-                img_lat_pairs_dic[mode] = img_lat_pairs
-                torch.save(img_lat_pairs, pairs_path)
-
-        else:
-            train_lat = []
-            for i in range(self.args.n_train_img):
-                lat = torch.randn((1, self.config.data.channels, self.config.data.image_size, self.config.data.image_size)).to(self.device)
-                # train_lat.append([None, None, lat])
-                train_lat.append([torch.zeros_like(lat), torch.zeros_like(lat), lat])
-
-            img_lat_pairs_dic['train'] = train_lat
-
-            test_lat = []
-
-            for i in range(self.args.n_test_img//self.args.bs_test):
-                lat = torch.randn((self.args.bs_test, self.config.data.channels, self.config.data.image_size, self.config.data.image_size))
-                test_lat.append([torch.zeros_like(lat), torch.zeros_like(lat), lat])
-
-            if  self.args.n_test_img%self.args.bs_test!=0:
-                lat = torch.randn((self.args.n_test_img%self.args.bs_test, self.config.data.channels, self.config.data.image_size, self.config.data.image_size))
-                test_lat.append([torch.zeros_like(lat), torch.zeros_like(lat), lat])
-
-            img_lat_pairs_dic['test'] = test_lat
+        img_lat_pairs_dic['test'] = test_lat
 
             
 
@@ -597,23 +412,3 @@ class Asyrp(object):
             lambda_manifold=0,
             lambda_texture=0,
             clip_model=self.args.clip_model_name)
-
-        # # If user-defined edit and boost step are given, then these itself are assigned 
-        # dataset_name = str(self.args.config).split(".")[0]
-        # if dataset_name == "custom":
-        #     dataset_name = self.args.custom_dataset_name
-        # LPIPS_file_name = f"{dataset_name}_LPIPS_distance_x0_t.tsv"
-        # LPIPS_file_path = os.path.join("utils", LPIPS_file_name)
-
-        # import csv
-        # lpips_dict = {}
-        # with open(LPIPS_file_path, "r") as f:
-        #     lines = csv.reader(f, delimiter="\t")
-        #     for line in lines:
-        #         lpips_dict[int(line[0])] = float(line[1])
-
-        # sorted_lpips_dict_key_list = list(lpips_dict.keys())
-        # sorted_lpips_dict_key_list.sort()
-        # if len(sorted_lpips_dict_key_list) != 1000:
-        #     # even if not fully steps, it's okay.
-        #     print("Warning: LPIPS file not fully steps! (But it's okay. lol)")

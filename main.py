@@ -20,33 +20,25 @@ def parse_args_and_config():
     parser = argparse.ArgumentParser(description=globals()['__doc__'])
 
     # Logging
-    parser.add_argument('--sh_file_name', type=str, default='script.sh', help='copy the script this file')
+    # parser.add_argument('--sh_file_name', type=str, default='script.sh', help='copy the script this file')
 
     parser.add_argument('--lpips_edit_th', type=float, default=0.33, help='we use lpips_edit_th to get t_edit')
     parser.add_argument('--lpips_addnoise_th', type=float, default=0.1, help='we use lpips_addnoise_th to get t_addnoise')
 
-    # Training Mode
-    parser.add_argument('--run_train', action='store_true', help='run_train')
-    parser.add_argument('--train_delta_block', action='store_true', help='train Delta_block')
-    parser.add_argument('--train_delta_h', action='store_true', help='train Delta_h')
-    parser.add_argument('--just_precompute', action='store_true', help='just_precompute')
-    parser.add_argument('--ignore_timesteps', action='store_true', default=False, help='train without timesteps')
-    parser.add_argument('--shuffle_train_dataloader', action='store_true', default=False, help='shuffle train dataloader')
-    parser.add_argument('--re_precompute', action='store_true', default=False, help='re-precompute')
 
+    parser.add_argument('--just_precompute', action='store_true', help='just_precompute')
 
     # Training details
-    parser.add_argument('--lr_training', type=float, default=2e-1, help='Initial learning rate for training')
-    parser.add_argument('--use_x0_tensor', action='store_true', help='use_x0_tensor')
-    parser.add_argument('--save_x0', action='store_true', help='save x0_tensor (original image)')
-    parser.add_argument('--save_x_origin', action='store_true', help='save x_origin (original DDIM processing)')
+    # parser.add_argument('--use_x0_tensor', action='store_true', help='use_x0_tensor')
+    # parser.add_argument('--save_x0', action='store_true', help='save x0_tensor (original image)')
+    # parser.add_argument('--save_x_origin', action='store_true', help='save x_origin (original DDIM processing)')
     
-    parser.add_argument('--custom_train_dataset_dir', type=str, default="./custom/train")
-    parser.add_argument('--custom_test_dataset_dir', type=str, default="./custom/test")
+    # parser.add_argument('--custom_train_dataset_dir', type=str, default="./custom/train")
+    # parser.add_argument('--custom_test_dataset_dir', type=str, default="./custom/test")
 
     # Test Mode
     parser.add_argument('--run_test', action='store_true', help='run_test')
-    parser.add_argument('--load_random_noise', action='store_true', help='run_test')
+    # parser.add_argument('--load_random_noise', action='store_true', help='run_test')
     parser.add_argument('--saved_random_noise', action='store_true', help='run_test')
 
     
@@ -54,12 +46,12 @@ def parse_args_and_config():
     parser.add_argument('--start_image_id', type=int, default=0, help='Sampling after start_image_id')
     
     parser.add_argument('--save_process_origin', action='store_true', help='save_origin_process')
-    parser.add_argument('--save_process_delta_h', action='store_true', help='save_delta_h_process')
+    # parser.add_argument('--save_process_delta_h', action='store_true', help='save_delta_h_process')
     
-    parser.add_argument('--num_mean_of_delta_hs', type=int, default=0, help='Get mean of delta_h from num of data')
+    # parser.add_argument('--num_mean_of_delta_hs', type=int, default=0, help='Get mean of delta_h from num of data')
 
     # parser.add_argument('--do_alternate', type=int, default=0, help='Whether to train or not during CLIP finetuning')
-    parser.add_argument('--pass_editing', action='store_true', help='Whether to train or not during CLIP finetuning')
+    # parser.add_argument('--pass_editing', action='store_true', help='Whether to train or not during CLIP finetuning')
     
     # Style Transfer Mode
     parser.add_argument('--style_transfer', action="store_true")
@@ -68,7 +60,7 @@ def parse_args_and_config():
 
 
     # LPIPS
-    parser.add_argument('--lpips', action="store_true")
+    # parser.add_argument('--lpips', action="store_true")
     parser.add_argument('--custom_dataset_name', type=str, default="celeba")
 
     # Additional test
@@ -85,38 +77,9 @@ def parse_args_and_config():
     parser.add_argument('--latent_at', action='store_true')
     parser.add_argument('--test_celeba_dialog', action='store_true')
     
-    parser.add_argument('--latent_clr', action='store_true')
-    parser.add_argument('--eval_latent_clr', action='store_true')
-    parser.add_argument('--interpolation', action='store_true')
-    parser.add_argument('--interpolation2', action='store_true')
-    parser.add_argument('--clip_latent_optim', action='store_true')
-    parser.add_argument('--edit_images_from_dataset', action='store_true')
-    parser.add_argument('--edit_one_image', action='store_true')
-    parser.add_argument('--unseen2unseen', action='store_true')
-    parser.add_argument('--clip_finetune_eff', action='store_true')
-    parser.add_argument('--edit_one_image_eff', action='store_true')
-    parser.add_argument('--save_precomputed_images', action='store_true')
-    parser.add_argument('--test_pretrained', action='store_true')
-    parser.add_argument('--compute_distance_graph', action="store_true")
-
-    parser.add_argument('--global_cliploss', action="store_true")
 
     parser.add_argument('--save_to_folder', type=str)
-    parser.add_argument('--from_noise', action="store_true")
-    
-    parser.add_argument('--random_ddim', action="store_true")
-    parser.add_argument('--direct_ddim', action="store_true")
-    parser.add_argument('--direct_same_regardless_of_t', action="store_true")
-    parser.add_argument('--step_40_to_ddpm', action="store_true")
-    parser.add_argument('--l1_loss_with_x0',default=False, action="store_true", help="if false, l1 loss is with origin_predicted_x0")
 
-    parser.add_argument('--pass_origin_and_save_real_image',default=False, action="store_true")
-    parser.add_argument('--style_transfer_use_mean',default=False, action="store_true", help="if false, use adain (default)")
-    parser.add_argument('--analysis',default=False, action="store_true", help="dont save")
-    parser.add_argument('--Three_compare_addnoise', action="store_true")
-    parser.add_argument('--run_optimize_delta_h', action="store_true")
-    parser.add_argument('--run_test_pretrained_self_delta_h', action="store_true")
-    parser.add_argument('--test_pretrained_at_once', action="store_true")
 
     # Default
     parser.add_argument('--config', type=str, required=True, help='Path to the config file')
@@ -128,10 +91,10 @@ def parse_args_and_config():
     parser.add_argument('--align_face', type=int, default=1, help='align face or not')
 
     # Text
-    parser.add_argument('--edit_attr', type=str, default=None, help='Attribute to edit defiend in ./utils/text_dic.py')
-    parser.add_argument('--src_txts', type=str, action='append', help='Source text e.g. Face')
-    parser.add_argument('--trg_txts', type=str, action='append', help='Target text e.g. Angry Face')
-    parser.add_argument('--target_class_num', type=str, default=None)
+    # parser.add_argument('--edit_attr', type=str, default=None, help='Attribute to edit defiend in ./utils/text_dic.py')
+    # parser.add_argument('--src_txts', type=str, action='append', help='Source text e.g. Face')
+    # parser.add_argument('--trg_txts', type=str, action='append', help='Target text e.g. Angry Face')
+    # parser.add_argument('--target_class_num', type=str, default=None)
 
     # Sampling
     parser.add_argument('--t_0', type=int, default=999, help='Return step in [0, 1000)')
@@ -145,20 +108,15 @@ def parse_args_and_config():
 
 
     # Train & Test
-    parser.add_argument('--do_test', type=int, default=1, help='Whether to test or not during CLIP finetuning')
-    parser.add_argument('--bs_train', type=int, default=1, help='Training batch size during CLIP fineuning')
     parser.add_argument('--bs_test', type=int, default=1, help='Test batch size during CLIP fineuning')
-    parser.add_argument('--n_precomp_img', type=int, default=100, help='# of images to precompute latents')
-    parser.add_argument('--n_train_img', type=int, default=50, help='# of training images')
     parser.add_argument('--n_test_img', type=int, default=10, help='# of test images')
     parser.add_argument('--model_path', type=str, default=None, help='Test model path')
-    parser.add_argument('--get_h_num', type=int, default=0, help='Training batch size during Latent CLR')
+    # parser.add_argument('--get_h_num', type=int, default=0, help='Training batch size during Latent CLR')
     
 
     parser.add_argument('--hs_coeff', type=float, default=0.9, help='hs coefficient')
 
     
-    # parser.add_argument('--save_grid', action="store_true", help="save all results in a grid image")
     
     # Loss & Optimization
     parser.add_argument('--clip_model_name', type=str, default='ViT-B/16', help='ViT-B/16, ViT-B/32, RN50x16 etc')
@@ -294,19 +252,19 @@ def main():
     print("seeeeeed", args.seed)
     
 
-    # This code is for me. If you don't need it, just remove it out.
-    if torch.cuda.is_available():
-        assert args.bs_train % torch.cuda.device_count() == 0, f"Number of GPUs ({torch.cuda.device_count()}) must be a multiple of batch size ({args.bs_train})"
+    # # This code is for me. If you don't need it, just remove it out.
+    # if torch.cuda.is_available():
+    #     assert args.bs_train % torch.cuda.device_count() == 0, f"Number of GPUs ({torch.cuda.device_count()}) must be a multiple of batch size ({args.bs_train})"
 
     runner = Asyrp(args, config) # if you want to specify the device, add device="something" in the argument
     try:
         # check the example script files for essential parameters
-        if args.run_train:
-            runner.run_training()
-        elif args.run_test:
-            runner.run_test()
-        elif args.lpips:
-            runner.compute_lpips_distance()
+        # if args.run_train:
+        #     runner.run_training()
+        # elif args.run_test:
+        runner.run_test()
+        # elif args.lpips:
+        #     runner.compute_lpips_distance()
 
     except Exception:
         logging.error(traceback.format_exc())

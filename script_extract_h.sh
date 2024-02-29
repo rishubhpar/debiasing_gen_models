@@ -31,4 +31,4 @@ CUDA_VISIBLE_DEVICES=$gpu python main.py --run_test                         \
                         --sh_file_name "script_extract_h.sh"                \
                         --just_precompute                                       \
                         --savepath "/data/abhijnya/Classifier_guidance/runs"   \
-                        --test_path_one  "/data/abhijnya/Asyrp_official/input/dclf/new_model/gender/male" \
+                        --test_path_one  "/data/abhijnya/Asyrp_official/input/dclf/new_model/gender/male"

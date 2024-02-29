@@ -34,40 +34,17 @@ class CustomImageDataset(Dataset):
 
         return image, self.img_files[idx]
 
-def get_dataset(dataset_type, dataset_paths, config, target_class_num=None, gender=None):
+def get_dataset(dataset_type, dataset_paths, config, gender=None):
     # if category is CUSTOM, get images from custom arg path
     if config.data.category == "CUSTOM":
         print("inside custom dataset getter")
-        # train_dataset = CustomImageDataset(dataset_paths['custom_train'], transforms.Compose([transforms.Resize((256, 256)), transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]))
         test_dataset = CustomImageDataset(dataset_paths['custom_test'], transforms.Compose([transforms.Resize((256, 256)), transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]))
         return test_dataset
-
-    # if dataset_type == 'AFHQ':
-    #     print("inside afhq dataset getter")
-    #     train_dataset, test_dataset = get_afhq_dataset(dataset_paths['AFHQ'], config)
-    # elif dataset_type == "LSUN":
-    #     train_dataset, test_dataset = get_lsun_dataset(dataset_paths['LSUN'], config)
-    # elif dataset_type == "CelebA_HQ-attr":
-    #     train_dataset, test_dataset = get_celeba_dataset_attr(dataset_paths['CelebA_HQ'], config)
-    # elif dataset_type == "CelebA_HQ":
-    #     train_dataset, test_dataset = get_celeba_dataset(dataset_paths['CelebA_HQ'], config)
-    # elif dataset_type == "CelebA_HQ_Dialog":
-    #     train_dataset, test_dataset = get_celeba_dialog_dataset(dataset_paths['CelebA_HQ_Dialog'], config)
-    # elif dataset_type == "IMAGENET":
-    #     train_dataset, test_dataset = get_imagenet_dataset(dataset_paths['IMAGENET'], config, class_num=target_class_num)
-    # elif dataset_type == "MetFACE":
-    #     train_dataset = CustomImageDataset(os.path.join(dataset_paths['MetFACE'],'images'), transforms.Compose([transforms.Resize((256, 256)), transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]), test_nums=500)
-    #     test_dataset = CustomImageDataset(os.path.join(dataset_paths['MetFACE'],'images'), transforms.Compose([transforms.Resize((256, 256)), transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]), test_nums=500, train=False)
-    # elif dataset_type == "FFHQ":
-    #     train_dataset = CustomImageDataset(dataset_paths['FFHQ'], transforms.Compose([transforms.Resize((256, 256)), transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]), test_nums=500)
-    #     test_dataset = CustomImageDataset(dataset_paths['FFHQ'], transforms.Compose([transforms.Resize((256, 256)), transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]), test_nums=500, train=False)
-    # else:
-    #     raise ValueError
 
     return test_dataset
 
 
-def get_dataloader(test_dataset, bs_train=1, num_workers=0, shuffle=False):
+def get_dataloader(test_dataset, num_workers=0, shuffle=False):
 
     test_loader = DataLoader(
         test_dataset,
