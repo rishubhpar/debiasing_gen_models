@@ -100,7 +100,7 @@ Distribution based Generation:
 - `savepath` : Path where the h vectors need to be saved.
 ```
 - Train a Linear classifier on these images. Run __________ file to do this
-- Use the checkpoints of the classifier for generating images. Copy the checkpoint path into `h_classification.py` (for sample based) and `multi_classifier.py.py` for distribution based, and use the respective index in the  `attribute_list` parameter while generating
+- Use the checkpoints of the classifier for generating images. Copy the checkpoint path into `h_classification.py` (for sample based) and `multi_classifier.py` for distribution based, and use the respective index in the  `attribute_list` parameter while generating
 
 
 ## Acknowledge
