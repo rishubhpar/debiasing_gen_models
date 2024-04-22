@@ -1,5 +1,4 @@
-
-# Balancing Act: Distribution-Guided Debiasing in Diffusion Models
+# Official codebase of 'Balancing Act: Distribution-Guided Debiasing in Diffusion Models', CVPR 2024 
 
 <!--- [![arXiv](https://img.shields.io/badge/arXiv-2110.02711-red)](https://arxiv.org/abs/2210.10960) [![project_page](https://img.shields.io/badge/project_page-orange)](https://kwonminki.github.io/Asyrp/) 
 
