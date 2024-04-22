@@ -1,5 +1,13 @@
 # 'Balancing Act: Distribution-Guided Debiasing in Diffusion Models', CVPR 2024 
 
+<!--- [![paper](https://img.shields.io/badge/paper-cvpr2024-cyan)](https://openaccess.thecvf.com/content/ICCV2023/html/Zhang_ITI-GEN_Inclusive_Text-to-Image_Generation_ICCV_2023_paper.html)--->
+
+[![arXiv](https://img.shields.io/badge/arxiv-2309.05569-red)](https://arxiv.org/abs/2402.18206)
+[![Webpage](https://img.shields.io/badge/Webpage-green)](https://ab-34.github.io/balancing_act/)
+[![slides](https://img.shields.io/badge/Slides-orange)](https://docs.google.com/presentation/d/1mQOl3KH9ddcouBA11-VarATyyhAiGl8nK94ot0aQe14/edit?usp=sharing)
+
+
+
 <!--- [![arXiv](https://img.shields.io/badge/arXiv-2110.02711-red)](https://arxiv.org/abs/2210.10960) [![project_page](https://img.shields.io/badge/project_page-orange)](https://kwonminki.github.io/Asyrp/) 
 
 
