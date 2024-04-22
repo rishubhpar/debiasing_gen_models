@@ -104,3 +104,12 @@ Distribution based Generation:
 
 ## Acknowledge
 [Codes are based on Asyrp.] (https://github.com/kwonminki/Asyrp_official)
+
+
+## Bibtex
+@article{parihar2024balancing,
+  title={Balancing Act: Distribution-Guided Debiasing in Diffusion Models},
+  author={Parihar, Rishubh and Bhat, Abhijnya and Mallick, Saswat and Basu, Abhipsa and Kundu, Jogendra Nath and Babu, R Venkatesh},
+  journal={Computer Vision and Patter Recognition},
+  year={2024}
+}
