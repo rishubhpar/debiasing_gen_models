@@ -104,4 +104,4 @@ Distribution based Generation:
 
 
 ## Acknowledge
-Codes are based on Asyrp.
+[Codes are based on Asyrp.] (https://github.com/kwonminki/Asyrp_official)
