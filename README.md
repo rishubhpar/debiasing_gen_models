@@ -107,9 +107,11 @@ Distribution based Generation:
 
 
 ## Bibtex
+```
 @article{parihar2024balancing,
   title={Balancing Act: Distribution-Guided Debiasing in Diffusion Models},
   author={Parihar, Rishubh and Bhat, Abhijnya and Mallick, Saswat and Basu, Abhipsa and Kundu, Jogendra Nath and Babu, R Venkatesh},
-  journal={Computer Vision and Patter Recognition},
+  journal={Computer Vision and Pattern Recognition},
   year={2024}
 }
+```
