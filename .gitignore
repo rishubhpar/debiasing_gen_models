@@ -2,3 +2,4 @@ test/
 precomputed/
 pretrained/
 __pycache__/
+runs/
