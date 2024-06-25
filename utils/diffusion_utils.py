@@ -32,9 +32,9 @@ def denoising_step(xt, t, t_next, *,
                    eyeglasses = 1,
                    scale = [1500],
                    timestep_list = [0,50],
-                   usefancy = False,
-                   gamma_factor = 0.1,
-                   guidance_loss = 'chi_without_5',
+                #    usefancy = False,
+                #    gamma_factor = 0.1,
+                #    guidance_loss = 'chi_without_5',
                    attribute_list = [0,1,0,0],
                    vanilla_generation = False,
                    t_edit=0,
@@ -57,7 +57,7 @@ def denoising_step(xt, t, t_next, *,
     at = extract((1.0 - b).cumprod(dim=0), t, xt.shape)
 
     # et, et_modified, delta_h, middle_h = model(xt, t, sample=sample, male = male, eyeglasses=eyeglasses, scale=scale, index=index, t_edit=t_edit, hs_coeff=hs_coeff, delta_h=delta_h, ignore_timestep=ignore_timestep, use_mask=use_mask)
-    et, et_modified, delta_h, middle_h = model(xt, t, sample=sample, timestep_list = timestep_list, male = male, eyeglasses=eyeglasses, scale=scale, usefancy=usefancy, gamma_factor=gamma_factor, guidance_loss=guidance_loss, attribute_list=attribute_list, vanilla_generation=vanilla_generation, bt = bt[0].item(), t_edit=t_edit, hs_coeff=hs_coeff, delta_h=delta_h, ignore_timestep=ignore_timestep, use_mask=use_mask)
+    et, et_modified, delta_h, middle_h = model(xt, t, sample=sample, timestep_list = timestep_list, male = male, eyeglasses=eyeglasses, scale=scale, attribute_list=attribute_list, vanilla_generation=vanilla_generation, bt = bt[0].item(), t_edit=t_edit, hs_coeff=hs_coeff, delta_h=delta_h, ignore_timestep=ignore_timestep, use_mask=use_mask)
 
 
 

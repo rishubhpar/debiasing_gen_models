@@ -47,7 +47,7 @@ def get_timetstep(t):
     #     return -1
 
 @torch.enable_grad()
-def gradients_point_five(x, t, male = 0.5, eyeglasses = 0.5, smile = 0.5, guidance_loss='chi_without_5', attribute_list = [0,1,0,0], scale=[1500,700]):
+def gradients_point_five(x, t, male = 0.5, eyeglasses = 0.5, smile = 0.5, attribute_list = [0,1,0,0], scale=[1500,700]):
     temperature = 8
     x = x.detach().requires_grad_()
     
@@ -67,36 +67,36 @@ def gradients_point_five(x, t, male = 0.5, eyeglasses = 0.5, smile = 0.5, guidan
         logits = model_gender(x,timestep)/temperature
         logits = F.softmax(logits, dim=1)
 
-        if guidance_loss == 'kl_without_5':
-            # print(guidance_loss)
-            loss_gender = torch.mean(logits, dim = 0)
-            loss = (loss_gender[0]*torch.log(loss_gender[0]/(1-male))) + (loss_gender[1]*torch.log(loss_gender[1]/male))
+        # if guidance_loss == 'kl_without_5':
+        #     # print(guidance_loss)
+        #     loss_gender = torch.mean(logits, dim = 0)
+        #     loss = (loss_gender[0]*torch.log(loss_gender[0]/(1-male))) + (loss_gender[1]*torch.log(loss_gender[1]/male))
 
-        elif guidance_loss == 'kl_with_5':
-            # print(guidance_loss)
-            # KL itself, but only using the values>0.5
-            fem = torch.sum(logits[:,0][logits[:,0]>0.5])/len(logits)
-            mal = torch.sum(logits[:,1][logits[:,1]>0.5])/len(logits)
-            # Considering individual attributes
-            loss = (fem*torch.log(fem/(1-male))) + (mal*torch.log(mal/male))
+        # elif guidance_loss == 'kl_with_5':
+        #     # print(guidance_loss)
+        #     # KL itself, but only using the values>0.5
+        #     fem = torch.sum(logits[:,0][logits[:,0]>0.5])/len(logits)
+        #     mal = torch.sum(logits[:,1][logits[:,1]>0.5])/len(logits)
+        #     # Considering individual attributes
+        #     loss = (fem*torch.log(fem/(1-male))) + (mal*torch.log(mal/male))
 
-        elif guidance_loss == 'chi_without_5':
-            # print(guidance_loss)
-            #  # Chi square
-            loss_gender = torch.mean(logits, dim = 0)
-            loss = ((loss_gender[0]-(1-male))**2)/(1-male) + ((loss_gender[1]-male)**2)/male
+        # elif guidance_loss == 'chi_without_5':
+        # print(guidance_loss)
+        #  # Chi square
+        loss_gender = torch.mean(logits, dim = 0)
+        loss = ((loss_gender[0]-(1-male))**2)/(1-male) + ((loss_gender[1]-male)**2)/male
 
 
-        elif guidance_loss == 'chi_with_5':
-            # print(guidance_loss)
-            # Chi square w >0.5
-            fem = torch.sum(logits[:,0][logits[:,0]>0.5])/len(logits)
-            mal = torch.sum(logits[:,1][logits[:,1]>0.5])/len(logits)
-            loss = ((fem-(1-male))**2)/(1-male) + ((mal-male)**2)/male
+        # elif guidance_loss == 'chi_with_5':
+        #     # print(guidance_loss)
+        #     # Chi square w >0.5
+        #     fem = torch.sum(logits[:,0][logits[:,0]>0.5])/len(logits)
+        #     mal = torch.sum(logits[:,1][logits[:,1]>0.5])/len(logits)
+        #     loss = ((fem-(1-male))**2)/(1-male) + ((mal-male)**2)/male
 
-        else:
-            print("wrong loss, exiting")
-            exit()
+        # else:
+        #     print("wrong loss, exiting")
+        #     exit()
 
         gradients = torch.autograd.grad(loss*300, x)[0]
 
@@ -118,52 +118,52 @@ def gradients_point_five(x, t, male = 0.5, eyeglasses = 0.5, smile = 0.5, guidan
         logits_2 = model_2(x,timestep)/temperature
         logits_2 = F.softmax(logits_2, dim=1)
 
-        if guidance_loss == 'kl_without_5':
-            # print(guidance_loss)
-            logits_1 = torch.mean(logits_1, dim = 0)
-            loss1 = (logits_1[0]*torch.log(logits_1[0]/(1-male))) + (logits_1[1]*torch.log(logits_1[1]/male))
+        # if guidance_loss == 'kl_without_5':
+        #     # print(guidance_loss)
+        #     logits_1 = torch.mean(logits_1, dim = 0)
+        #     loss1 = (logits_1[0]*torch.log(logits_1[0]/(1-male))) + (logits_1[1]*torch.log(logits_1[1]/male))
 
-            logits_2 = torch.mean(logits_2, dim = 0)
-            loss2 = (logits_2[0]*torch.log(logits_2[0]/(1-male))) + (logits_2[1]*torch.log(logits_2[1]/male))
+        #     logits_2 = torch.mean(logits_2, dim = 0)
+        #     loss2 = (logits_2[0]*torch.log(logits_2[0]/(1-male))) + (logits_2[1]*torch.log(logits_2[1]/male))
 
-        elif guidance_loss == 'kl_with_5':
-            # print(guidance_loss)
-            # KL itself, but only using the values>0.5
-            fem = torch.sum(logits_1[:,0][logits_1[:,0]>0.5])/len(logits_1)
-            mal = torch.sum(logits_1[:,1][logits_1[:,1]>0.5])/len(logits_1)
-            # Considering individual attributes
-            loss1 = (fem*torch.log(fem/(1-male))) + (mal*torch.log(mal/male))
+        # elif guidance_loss == 'kl_with_5':
+        #     # print(guidance_loss)
+        #     # KL itself, but only using the values>0.5
+        #     fem = torch.sum(logits_1[:,0][logits_1[:,0]>0.5])/len(logits_1)
+        #     mal = torch.sum(logits_1[:,1][logits_1[:,1]>0.5])/len(logits_1)
+        #     # Considering individual attributes
+        #     loss1 = (fem*torch.log(fem/(1-male))) + (mal*torch.log(mal/male))
 
-            fem = torch.sum(logits_2[:,0][logits_2[:,0]>0.5])/len(logits_2)
-            mal = torch.sum(logits_2[:,1][logits_2[:,1]>0.5])/len(logits_2)
-            # Considering individual attributes
-            loss2 = (fem*torch.log(fem/(1-male))) + (mal*torch.log(mal/male))
-
-
-        elif guidance_loss == 'chi_without_5':
-            # print(guidance_loss)
-            #  # Chi square
-            logits_1 = torch.mean(logits_1, dim = 0)
-            loss1 = ((logits_1[0]-(1-male))**2)/(1-male) + ((logits_1[1]-male)**2)/male
-
-            logits_2 = torch.mean(logits_2, dim = 0)
-            loss2 = ((logits_2[0]-(1-male))**2)/(1-male) + ((logits_2[1]-male)**2)/male
+        #     fem = torch.sum(logits_2[:,0][logits_2[:,0]>0.5])/len(logits_2)
+        #     mal = torch.sum(logits_2[:,1][logits_2[:,1]>0.5])/len(logits_2)
+        #     # Considering individual attributes
+        #     loss2 = (fem*torch.log(fem/(1-male))) + (mal*torch.log(mal/male))
 
 
-        elif guidance_loss == 'chi_with_5':
-            # print(guidance_loss)
-            # Chi square w >0.5
-            fem = torch.sum(logits_1[:,0][logits_1[:,0]>0.5])/len(logits_1)
-            mal = torch.sum(logits_1[:,1][logits_1[:,1]>0.5])/len(logits_1)
-            loss1 = ((fem-(1-male))**2)/(1-male) + ((mal-male)**2)/male
+        # elif guidance_loss == 'chi_without_5':
+        # print(guidance_loss)
+        #  # Chi square
+        logits_1 = torch.mean(logits_1, dim = 0)
+        loss1 = ((logits_1[0]-(1-male))**2)/(1-male) + ((logits_1[1]-male)**2)/male
 
-            fem = torch.sum(logits_2[:,0][logits_2[:,0]>0.5])/len(logits_2)
-            mal = torch.sum(logits_2[:,1][logits_2[:,1]>0.5])/len(logits_2)
-            loss2 = ((fem-(1-male))**2)/(1-male) + ((mal-male)**2)/male
+        logits_2 = torch.mean(logits_2, dim = 0)
+        loss2 = ((logits_2[0]-(1-male))**2)/(1-male) + ((logits_2[1]-male)**2)/male
 
-        else:
-            print("wrong loss, exiting")
-            exit()
+
+        # elif guidance_loss == 'chi_with_5':
+        #     # print(guidance_loss)
+        #     # Chi square w >0.5
+        #     fem = torch.sum(logits_1[:,0][logits_1[:,0]>0.5])/len(logits_1)
+        #     mal = torch.sum(logits_1[:,1][logits_1[:,1]>0.5])/len(logits_1)
+        #     loss1 = ((fem-(1-male))**2)/(1-male) + ((mal-male)**2)/male
+
+        #     fem = torch.sum(logits_2[:,0][logits_2[:,0]>0.5])/len(logits_2)
+        #     mal = torch.sum(logits_2[:,1][logits_2[:,1]>0.5])/len(logits_2)
+        #     loss2 = ((fem-(1-male))**2)/(1-male) + ((mal-male)**2)/male
+
+        # else:
+        #     print("wrong loss, exiting")
+        #     exit()
 
         gradients1 = torch.autograd.grad(loss1*300, x)[0]
         gradients2 = torch.autograd.grad(loss2*300, x)[0]

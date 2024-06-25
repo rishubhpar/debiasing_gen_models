@@ -1,4 +1,4 @@
-name: hspace
+name: debias
 channels:
   - nvidia
   - conda-forge

@@ -676,7 +676,7 @@ class UNetModel(nn.Module):
         self.middle_block.apply(convert_module_to_f32)
         self.output_blocks.apply(convert_module_to_f32)
 
-    def forward(self, x, timesteps, sample = True, male = 1, eyeglasses = 1, scale = [1500], timestep_list = [1,50], y=None, t_edit=400, hs_coeff=(1.0, 1.0), delta_h=None, ignore_timestep=False , use_mask=False, usefancy=False, bt=1, gamma_factor=0.1, guidance_loss='chi_without_5', attribute_list=[0,1,0,0], vanilla_generation=False):
+    def forward(self, x, timesteps, sample = True, male = 1, eyeglasses = 1, scale = [1500], timestep_list = [1,50], y=None, t_edit=400, hs_coeff=(1.0, 1.0), delta_h=None, ignore_timestep=False , use_mask=False, bt=1, attribute_list=[0,1,0,0], vanilla_generation=False):
         """
         Apply the model to an input batch.
 
@@ -765,7 +765,7 @@ class UNetModel(nn.Module):
 
                 else:
                     # print("distribution")
-                    gradients = multi_classifier.gradients_point_five(h, int(timesteps.item()), male = male, eyeglasses = eyeglasses, guidance_loss='chi_without_5', attribute_list = attribute_list, scale=scale)
+                    gradients = multi_classifier.gradients_point_five(h, int(timesteps.item()), male = male, eyeglasses = eyeglasses, attribute_list = attribute_list, scale=scale)
                     # gradients = clip_classifier.gradients(h,int(timesteps.item()), male=male, eyeglasses=eyeglasses, attribute_list=attribute_list,scale=scale, clip_latent=clip_latent,model_clip=model_clip, bt=bt)
 
                 if gradients is not None:
@@ -777,14 +777,14 @@ class UNetModel(nn.Module):
                     # print(gradients.shape)
                     assert h.shape ==gradients.shape
                     # print(scale)
-                    if usefancy:
+                    # if usefancy:
                         # print("using gamma decay")
                         # print(gamma_factor)
                         # print(bt)
-                        h = h.detach() - gradients*1.5*((bt)**gamma_factor)
-                    else:
-                        # print("normal")
-                        h = h.detach() - gradients
+                    h = h.detach() - gradients*1.5*((bt)**0.05)
+                    # else:
+                    #     # print("normal")
+                    #     h = h.detach() - gradients
 
 
 

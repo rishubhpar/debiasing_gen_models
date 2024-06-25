@@ -10,21 +10,19 @@ test_step=50    # if large, it takes long time.
 # RANDOM=$$
 # 20021
 timesteps="1,50"
-loss_type="chi_without_5"
-gamma=0.05
 
 attribute_list="0,1,0,0"
-scale=1500
-attribute=0.5
+scale=15
+attribute=1
 meh="vanilla"
 # Next command
 CUDA_VISIBLE_DEVICES=$gpu python main.py --run_test                         \
                         --config $config                                    \
-                        --exp ./runs/delllll/${attribute_list}/${meh}                               \
-                        --n_test_img 10                                 \
+                        --exp ./runs/${attribute_list}/${meh}                               \
+                        --n_test_img 5                                 \
                         --seed $RANDOM                                        \
                         --n_iter 5                                          \
-                        --bs_test 100                                         \
+                        --bs_test 1                                         \
                         --t_0 999                                           \
                         --n_inv_step 50                                     \
                         --n_train_step 50                                   \
@@ -34,9 +32,6 @@ CUDA_VISIBLE_DEVICES=$gpu python main.py --run_test                         \
                         --savepath ""   \
                         --male $attribute      \
                         --timestep_list $timesteps    \
-                        --guidance_loss $loss_type  \
                         --scale $scale   \
                         --attribute_list $attribute_list    \
-                        --gamma_factor $gamma  \
-                        --usefancy  \
-                        --vanilla_generation
+                        --sample 
