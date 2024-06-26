@@ -71,7 +71,7 @@ We provide pretrained H classifiers for  `Gender`, `Race` and `age` for Celeba-H
 
 Run the `./s_u_r.sh` file to generate images:
 
-```
+
 - `exp`: Path that the iamges should be stored in.
 - `edit_attr`: Attribute to edit. But not used for now. you can use `./utils/text_dic.py` to predefined source-target text pairs or define new pair. 
 - `n_test_img` : How many images should be generated?
@@ -93,7 +93,7 @@ Distribution based Generation:
 - `sample` : False
 - `bs_test` : 100 (if any other, scale needs to be tuned accordingly) (higher the batch size, better is the guidance)
 - `male` : Fraction of each class. example: for gender, 0.5 = 50% Male, 50% Female generations
-```
+
 
 ### Training h-classifiers for other attributes/ other datasets
 - A directory of images of all the classes of the particular attribute needs to be made. Example: If attribute is Gender, images of males and females need to be kept in 2 directories (Around 1000-2000 images for each class)
