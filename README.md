@@ -60,7 +60,6 @@ Asyrp works on the checkpoints of pretrained diffusion models.
 Create the environment by running the following:
 ```
 - conda env create -f environment.yml
-- pip install git+https://github.com/openai/CLIP.git
 - pip install https://github.com/podgorskiy/dnnlib/releases/download/0.0.1/dnnlib-0.0.1-py3-none-any.whl
 ```
 Download the pretrained models from [here](https://1drv.ms/u/s!AkQjJhxDm0Fyhqp_4gkYjwVRBe8V_w?e=Et3ITH) and store it in `pretrained/`
