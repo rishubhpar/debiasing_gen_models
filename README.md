@@ -110,15 +110,17 @@ Distribution based Generation:
 
 
 ## Acknowledge
-[Codes are based on Asyrp.] (https://github.com/kwonminki/Asyrp_official)
+Codes are based on [Asyrp](https://github.com/kwonminki/Asyrp_official)
 
 
 ## Bibtex
 ```
-@article{parihar2024balancing,
-  title={Balancing Act: Distribution-Guided Debiasing in Diffusion Models},
-  author={Parihar, Rishubh and Bhat, Abhijnya and Mallick, Saswat and Basu, Abhipsa and Kundu, Jogendra Nath and Babu, R Venkatesh},
-  journal={Computer Vision and Pattern Recognition},
-  year={2024}
+@InProceedings{Parihar_2024_CVPR,
+    author    = {Parihar, Rishubh and Bhat, Abhijnya and Basu, Abhipsa and Mallick, Saswat and Kundu, Jogendra Nath and Babu, R. Venkatesh},
+    title     = {Balancing Act: Distribution-Guided Debiasing in Diffusion Models},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+    month     = {June},
+    year      = {2024},
+    pages     = {6668-6678}
 }
 ```
