@@ -23,7 +23,7 @@ def parse_args_and_config():
     # parser.add_argument('--sh_file_name', type=str, default='script.sh', help='copy the script this file')
 
     parser.add_argument('--lpips_edit_th', type=float, default=0.33, help='we use lpips_edit_th to get t_edit')
-    parser.add_argument('--lpips_addnoise_th', type=float, default=0.1, help='we use lpips_addnoise_th to get t_addnoise')
+    parser.add_argument('--lpips_addnoise_th', type=float, default=1.2, help='we use lpips_addnoise_th to get t_addnoise')
 
 
     parser.add_argument('--just_precompute', action='store_true', help='just_precompute')
@@ -98,9 +98,9 @@ def parse_args_and_config():
 
     # Sampling
     parser.add_argument('--t_0', type=int, default=999, help='Return step in [0, 1000)')
-    parser.add_argument('--n_inv_step', type=int, default=40, help='# of steps during generative pross for inversion')
-    parser.add_argument('--n_train_step', type=int, default=6, help='# of steps during generative pross for train')
-    parser.add_argument('--n_test_step', type=int, default=40, help='# of steps during generative pross for test')
+    parser.add_argument('--n_inv_step', type=int, default=50, help='# of steps during generative pross for inversion')
+    parser.add_argument('--n_train_step', type=int, default=50, help='# of steps during generative pross for train')
+    parser.add_argument('--n_test_step', type=int, default=50, help='# of steps during generative pross for test')
     parser.add_argument('--sample_type', type=str, default='ddim', help='ddpm for Markovian sampling, ddim for non-Markovian sampling')
     parser.add_argument('--eta', type=float, default=0.0, help='Controls of varaince of the generative process')
 
@@ -120,7 +120,6 @@ def parse_args_and_config():
     
     # Loss & Optimization
     parser.add_argument('--clip_model_name', type=str, default='ViT-B/16', help='ViT-B/16, ViT-B/32, RN50x16 etc')
-    parser.add_argument('--n_iter', type=int, default=1, help='# of iterations of a generative process with `n_train_img` images')
 
     parser.add_argument('--savepath', type=str, default="./")
     parser.add_argument('--test_path_one', type=str, default="./")

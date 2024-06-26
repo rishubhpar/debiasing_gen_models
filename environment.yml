@@ -203,13 +203,12 @@ dependencies:
     - blobfile==1.3.1
     - cachetools==5.3.1
     - click==8.1.7
-    # - clip==1.0
+    - git+https://github.com/openai/CLIP.git
     - colorful==0.5.5
     - contextlib2==21.6.0
     - contourpy==1.1.0
     - cycler==0.11.0
     - distlib==0.3.7
-    # - dnnlib==0.0.1
     - exceptiongroup==1.1.3
     - fastapi==0.103.2
     - filelock==3.12.2
@@ -304,4 +303,4 @@ dependencies:
     - wrapt==1.15.0
     - xmltodict==0.12.0
     - yarl==1.9.2
-prefix: /home/test/anaconda3/envs/hspace
+prefix: /home/test/anaconda3/envs/debias

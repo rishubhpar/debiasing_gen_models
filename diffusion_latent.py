@@ -290,7 +290,7 @@ class Asyrp(object):
             self.save_image(model, x_lat_tensor, seq_test, seq_test_next,
                                         folder_dir=self.args.test_image_folder,
                                         save_process_origin=self.args.save_process_origin,
-                                        file_name=f'test_{step}_{self.args.n_iter - 1}'
+                                        file_name=f'test_{step}'
                                         )
                                     
             if (step+1)*self.args.bs_test >= self.args.n_test_img:
