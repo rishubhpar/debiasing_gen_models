@@ -1,4 +1,4 @@
-# 'Balancing Act: Distribution-Guided Debiasing in Diffusion Models', CVPR 2024 
+# Balancing Act: Distribution-Guided Debiasing in Diffusion Models, CVPR 2024 
 
 <!--- [![paper](https://img.shields.io/badge/paper-cvpr2024-cyan)](https://openaccess.thecvf.com/content/ICCV2023/html/Zhang_ITI-GEN_Inclusive_Text-to-Image_Generation_ICCV_2023_paper.html)--->
 
@@ -72,7 +72,7 @@ We provide pretrained H classifiers for  `Gender`, `Race` and `age` for Celeba-H
 Run the `./s_u_r.sh` file to generate images:
 
 
-- `exp`: Path that the iamges should be stored in.
+- `exp`: Path that the images should be stored in.
 - `edit_attr`: Attribute to edit. But not used for now. you can use `./utils/text_dic.py` to predefined source-target text pairs or define new pair. 
 - `n_test_img` : How many images should be generated?
 - `attribute_list` : Attribute to be balanced: [1,0,0,0 - Eyeglasses, 0,1,0,0 - Gender, 0,0,1,0 - Race] [For multi attributes, add 1's accordingly, ex: 1,1,0,0 = Eyeglasses+ Gender]
