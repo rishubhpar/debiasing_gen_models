@@ -65,7 +65,7 @@ We use a modded version of [HF diffusers](https://github.com/huggingface/diffuse
 
 ```bash
 pip install huggingface_hub transformers accelerate
-python run_plot.py
+python run_stable_diffusion.py
 ```
 
 ## Acknowledge
