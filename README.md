@@ -68,6 +68,18 @@ pip install huggingface_hub transformers accelerate
 python run_stable_diffusion.py
 ```
 
+<details>
+<summary><span style="font-weight: bold;">Arguments for generating from stable diffusion</span></summary>
+
+- `original_prompt`: The prompt of the subject that needs to be generated. Ex: person, doctor, constsruction worker, firefighter, etc.
+- `negative_prompt`: We inherit this from a [discussion thread in HF](https://huggingface.co/spaces/stabilityai/stable-diffusion/discussions/7857#63bee17e20784381e8e54d33) and found it suitable for humans and most subjects covered in our paper.
+- `MODE`: We offer two solutions: `sampled` and `distribution`. The former allows us to generate samples solely for a particular biased class (e.g., all males), while the latter generates a balanced distribution.
+- `checkpoint_path`: The path to the pretrained classifiers.
+- `loss_strength`: The multiplier to the guidance strength of the classifier for strong effects.
+- `scaling_strength`: The multiplier to the guidance strength of the classifier for milder effects.
+
+</details>
+
 ## Acknowledge
 Codes are based on [Asyrp](https://github.com/kwonminki/Asyrp_official)
 
